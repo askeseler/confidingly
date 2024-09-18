@@ -1,0 +1,68 @@
+#root {
+    height: 100%;
+}
+
+.container {  display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    grid-template-rows: 100px 1fr 100px;
+    gap: 0px 0px;
+    grid-auto-flow: row;
+    height: 100%;
+    background: black;
+  }
+  
+  .Header { grid-area: 1 / 1 / 2 / 6; }
+  
+  .Content { grid-area: 2 / 1 / 3 / 6; }
+  
+  .Footer { grid-area: 3 / 1 / 4 / 6; }
+  
+  .UserIcon { grid-area: 1 / 5 / 2 / 6; }
+  
+  .AppIcon { grid-area: 1 / 1 / 2 / 2; }
+  
+  .AppIconLarge { grid-area: 1 / 2 / 2 / 5; }
+  
+  .Menu1 { grid-area: 3 / 1 / 4 / 2; }
+  
+  .Menu2 { grid-area: 3 / 2 / 4 / 3; }
+  
+  .Menu3 { grid-area: 3 / 3 / 4 / 4; }
+  
+  .Menu4 { grid-area: 3 / 4 / 4 / 5; }
+  
+  .Menu5 { grid-area: 3 / 5 / 4 / 6; }
+  
+  
+  html, body , .container {
+    height: 100%;
+    margin: 0;
+  }
+  
+  /* For presentation only, no need to copy the code below */
+  
+  .container * {
+    position: relative;
+  }
+  /*.container *:after {
+    content:attr(class);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: grid;
+    align-items: center;
+    justify-content: center;
+  }*/
+
+
+  .centered-div {
+    width: 400px;
+    height: 800px;
+    background-color: lightgray; /* Just for visual reference */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
