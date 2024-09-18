@@ -40,10 +40,6 @@
   }
   
   /* For presentation only, no need to copy the code below */
-  
-  .container * {
-    position: relative;
-  }
   /*.container *:after {
     content:attr(class);
     position: absolute;
@@ -58,8 +54,9 @@
 
 
   .centered-div {
-    width: 400px;
-    height: 800px;
+    width: 500px;
+    height: 100vh;
+    overflow: hidden;
     background-color: lightgray; /* Just for visual reference */
     position: absolute;
     top: 50%;
