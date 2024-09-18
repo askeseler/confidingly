@@ -55,7 +55,7 @@
 
   .centered-div {
     width: 500px;
-    height: 100vh;
+    height: calc(100vh - 3px);
     overflow: hidden;
     background-color: lightgray; /* Just for visual reference */
     position: absolute;

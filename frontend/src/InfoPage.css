@@ -12,7 +12,7 @@
   
   .scroll-content {
     width: 100%;
-    height: calc(100vh - 200px);/* Header and Footer of CSS grid together 200px. Height of centered div 100vh*/
+    height: calc(100vh - 3px - 200px);/* Header and Footer of CSS grid together 200px. Height of centered div 100vh*/
     padding: 20px;
     color: #fff;
     background-color: black;
