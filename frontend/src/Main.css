@@ -28,7 +28,68 @@
   .Menu4 { grid-area: 3 / 4 / 4 / 5; }
   
   .Menu5 { grid-area: 3 / 5 / 4 / 6; }
+
+  .Content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
   
+  .UserIcon,
+  .AppIcon,
+  .Menu1,
+  .Menu2,
+  .Menu3,
+  .Menu4,
+  .Menu5 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .AppIcon img,
+  .UserIcon img {
+    width: 75px;
+    height: 75px;
+  }
+  
+  .AppIconLarge {
+    color: white;
+    font-size: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .AppIconLarge div {
+    font-size: 16px;
+  }
+  
+  .Menu1 div,
+  .Menu2 div,
+  .Menu3 div,
+  .Menu4 div,
+  .Menu5 div {
+    text-align: center;
+  }
+  
+  .Menu1 img,
+  .Menu2 img,
+  .Menu3 img,
+  .Menu4 img,
+  .Menu5 img {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .Menu1 div div,
+  .Menu2 div div,
+  .Menu3 div div,
+  .Menu4 div div,
+  .Menu5 div div {
+    color: white;
+    font-size: 12px;
+  }
   
   html, body, #root, .mobile-div .container{
     margin: 0;
