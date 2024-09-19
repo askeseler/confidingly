@@ -18,12 +18,6 @@ class App extends React.Component {
   }
 }
 
-//DEBUG
-window.debug = true;
-if(window.debug === true){
-}
-
-
 // For latest version, check https://react.semantic-ui.com/usage/
 const styleLink = document.createElement("link");
 styleLink.rel = "stylesheet";

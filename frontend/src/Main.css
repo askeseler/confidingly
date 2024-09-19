@@ -1,13 +1,9 @@
-#root {
-    height: 100%;
-}
-
 .container {  display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
     grid-template-rows: 100px 1fr 100px;
     gap: 0px 0px;
     grid-auto-flow: row;
-    height: 100%;
+    height: 100dvh;
     background: black;
   }
   
@@ -34,30 +30,24 @@
   .Menu5 { grid-area: 3 / 5 / 4 / 6; }
   
   
-  html, body , .container {
-    height: 100%;
+  html, body, #root, .mobile-div .container{
     margin: 0;
+    height: 100dvh;
   }
-  
-  /* For presentation only, no need to copy the code below */
-  /*.container *:after {
-    content:attr(class);
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: grid;
-    align-items: center;
-    justify-content: center;
-  }*/
 
+  .mobile-div {
+    height: 100dvh;
+    width: 100dvw;/* This must be explicit for mobile browser android chrome*/
+    color: pink;
+    border: "5px dotted yellow";
+    overflow: hidden;
+    position: absolute;
+  }
 
   .centered-div {
     width: calc(0.3 * 100vw);
     height: 100%;
     overflow: hidden;
-    background-color: lightgray; /* Just for visual reference */
     position: absolute;
     top: 50%;
     left: 50%;

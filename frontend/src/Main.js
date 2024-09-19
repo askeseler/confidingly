@@ -19,7 +19,6 @@ class App extends React.Component {
 
   componentDidMount() {
     // Prevent navigation via href. Change url instead manually and update state.page for conditional rendering.
-    //this.setState({page: window.location.href});
     let page = new URL(window.location.href).pathname.slice(1)
     if (page == "") page = this.default_page;
     this.setState({ page: page });
@@ -37,6 +36,16 @@ class App extends React.Component {
     });
   }
 
+  mobile_version1(){
+    return <>
+    <div className="container">
+    <div className="Header"></div>
+    <div className="Content"></div>
+    <div className="Menu1" style={{ background: "green", border: "2px solid white" }}>
+    </div>
+    </div>
+    </>
+  }
   mobile_version(){
     return <>
     <div className="container">
@@ -88,13 +97,11 @@ class App extends React.Component {
   }
 
   desktop_version(){
-    return     <div className="centered-div">
-    {this.mobile_version()}
-  </div>
+    return <div className="centered-div">{this.mobile_version()}</div>
     }
 
   render() {
-    if(window.mobile)return this.mobile_version();
+    if(window.mobile)return <div className="mobile-div">{this.mobile_version()}</div>;
     else return this.desktop_version();
   }
 }
