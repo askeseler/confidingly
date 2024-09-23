@@ -14,7 +14,7 @@ import { toHaveDisplayValue } from "@testing-library/jest-dom/matchers.js";
 class Main extends React.Component {
     constructor(props) {
       super(props)
-      this.default_page = "LandingPage"//SET THIS PAGE
+      this.default_page = ""//SET THIS PAGE
       this.state = { page: this.default_page, loginOpen: false, loggedIn: false }
       this.loginOrRedirect = this.loginOrRedirect.bind(this);
     }
@@ -22,24 +22,26 @@ class Main extends React.Component {
     componentDidMount() {
       // Prevent navigation via href. Change url instead manually and update state.page for conditional rendering.
       //this.setState({page: window.location.href});
-      let page = new URL(window.location.href).pathname.slice(1)
-      if (page == "") page = this.default_page;
-      this.setState({ page: page });
+      //let page = new URL(window.location.href).pathname.slice(1)
+      //if (page == "") page = this.default_page;
+      //this.setState({ page: this.default_page });
   
       window.block_navigation = true;
-      window.navigation.addEventListener("navigate", (event) => {
-        //window.addEventListener("popstate", (event) => {
-        //alert("popstate")
-  
-        if (window.block_navigation) {
-          event.preventDefault();
-          let new_slug = new URL(event.destination.url).pathname;
-          window.block_navigation = false;
-          window.history.pushState('', document.title, new_slug);
-          window.block_navigation = true;
-          this.setState({ page: new_slug.slice(1) })
-        };
-      });
+      //window.navigation.addEventListener("navigate", (event) => {
+      if (window.navigation){
+        window.addEventListener("popstate", (event) => {
+            //alert("popstate")
+    
+            if (window.block_navigation) {
+            event.preventDefault();
+            let new_slug = new URL(event.destination.url).pathname;
+            window.block_navigation = false;
+            window.history.pushState('', document.title, new_slug);
+            window.block_navigation = true;
+            this.setState({ page: new_slug.slice(1) })
+            };
+        });
+        }
     }
 
     loginOrRedirect(e){
@@ -54,7 +56,7 @@ class Main extends React.Component {
           <div className="container">
             <div className="Header"></div>
             <div className="Content">
-              {this.state.page === "InfoPage" ? <InfoPage /> : <></>}
+              {this.state.page === "" ? <InfoPage /> : <></>}
             </div>
             <div className="UserIcon">
               <LoginImage
@@ -64,7 +66,7 @@ class Main extends React.Component {
               />
             </div>
             <div className="AppIcon">
-              <a href="/InfoPage">
+              <a href="/">
                 <img src={coworking} alt="Coworking Icon" />
               </a>
             </div>
@@ -73,7 +75,7 @@ class Main extends React.Component {
             </div>
             <div className="Menu1">
               <div onClick={this.loginOrRedirect}>
-                <a href="/InfoPage">
+                <a href="/">
                   <img src={map} alt="Map Icon" />
                 </a>
                 <div>Map</div>
@@ -81,7 +83,7 @@ class Main extends React.Component {
             </div>
             <div className="Menu2">
               <div onClick={this.loginOrRedirect}>
-                <a href="/InfoPage">
+                <a href="/">
                   <img src={list} alt="List Icon" />
                 </a>
                 <div>List</div>
@@ -89,7 +91,7 @@ class Main extends React.Component {
             </div>
             <div className="Menu3">
               <div onClick={this.loginOrRedirect}>
-                <a href="/InfoPage">
+                <a href="/">
                   <img src={plus} alt="Add Icon" />
                 </a>
                 <div>Add</div>
@@ -97,7 +99,7 @@ class Main extends React.Component {
             </div>
             <div className="Menu4">
               <div onClick={this.loginOrRedirect}>
-                <a href="/InfoPage">
+                <a href="/">
                   <img src={star} alt="Recommended Icon" />
                 </a>
                 <div>Recommended</div>
@@ -105,7 +107,7 @@ class Main extends React.Component {
             </div>
             <div className="Menu5">
               <div onClick={this.loginOrRedirect}>
-                <a href="/InfoPage">
+                <a href="/">
                   <img src={search} alt="Search Icon" />
                 </a>
                 <div>Search</div>
