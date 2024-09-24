@@ -29,67 +29,24 @@ class Main extends React.Component {
   
       window.block_navigation = true;
       
-      if (window.navigation){
-        window.navigation.addEventListener("navigate", (event) => {  
-          if (window.block_navigation) {
-            event.preventDefault();
-            let new_slug = new URL(event.destination.url).pathname;
-            window.block_navigation = false;
-            window.history.pushState('', document.title, new_slug);
-            window.block_navigation = true;
-            this.setState({ page: new_slug.slice(1) })
-          };
-        });
-      }else{
-        window.addEventListener("popstate", (event) => {  
-          if (window.block_navigation) {
-            let new_slug = new URL(event.destination.url).pathname;
-            window.block_navigation = false;
-            window.history.pushState('', document.title, new_slug);
-            window.block_navigation = true;
-            this.setState({ page: new_slug.slice(1) })
-          };
-        });
-        if(false){
-        document.querySelectorAll('a').forEach(link => {
-          link.addEventListener('click', (e) => {
-            e.preventDefault();
-            const targetPage = e.currentTarget.getAttribute('href').slice(1);
-            if (targetPage) {
-                window.history.pushState({}, "", `/${targetPage}`); // Update the browser URL
-                this.setState({ page: targetPage });
-                this.forceUpdate();
-            }
-        });
-        });};
-    }
+      window.addEventListener("popstate", (event) => {  
+        if (window.block_navigation) {
+          event.preventDefault();
+          let new_slug = new URL(event.destination.url).pathname;
+          window.block_navigation = false;
+          window.history.pushState('', document.title, new_slug);
+          window.block_navigation = true;
+          this.setState({ page: new_slug.slice(1) })
+        };
+      });
     }
 
-    setLoggedIn(isLoggedIn, hoursUntilExpiration = 48) {
-      const expirationTime = Date.now() + hoursUntilExpiration * 60 * 60 * 1000; // Convert hours to milliseconds
-      localStorage.setItem('isLoggedIn', isLoggedIn);
-      localStorage.setItem('expirationTime', expirationTime); // Store expiration time
-    }
-  
-    // Check if user is logged in and if the session has expired
-    loggedIn() {
-      const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-      const expirationTime = localStorage.getItem('expirationTime');
-  
-      if (!isLoggedIn || !expirationTime) {
-        return false; // Not logged in or no expiration time
-      }
-  
-      // Check if the current time is past the expiration time
-      const currentTime = Date.now();
-      return currentTime < expirationTime; // Returns true if still logged in
-    }
-
-    loginOrRedirect(e){
-        if(!this.loggedIn()){
-            e.preventDefault();
+    loginOrRedirect(page){
+      alert(this.state.loggedIn);
+        if(!this.state.loggedIn){
             this.setState({ loginOpen: true});
         };
+        this.setState({page:page})
     }
   
     mobile_version() {
@@ -104,55 +61,55 @@ class Main extends React.Component {
               <Login
                 userIcon={user}
                 loginOpen={this.state.loginOpen}
-                setLoginOpen={(x) => this.setState({ loginOpen: x })}
-                setLoggedIn={this.setLoggedIn}
+                setLoginOpen={(x) => this.setState({ loginOpen: x})}
+                setLoggedIn={(x) => this.setState({loggedIn: x})}
               />
             </div>
             <div className="AppIcon">
-              <a href="/">
+              <div>
                 <img src={coworking} alt="Coworking Icon" />
-              </a>
+              </div>
             </div>
             <div className="AppIconLarge">
               <div>coworkingfriendly.com</div>
             </div>
             <div className="Menu1">
-              <div onClick={this.loginOrRedirect}>
-                <a href="/map">
+              <div onClick={()=>this.loginOrRedirect("map")}>
+                <div>
                   <img src={map} alt="Map Icon" />
-                </a>
+                </div>
                 <div>Map</div>
               </div>
             </div>
             <div className="Menu2">
-              <div onClick={this.loginOrRedirect}>
-                <a href="/">
+            <div onClick={()=>this.loginOrRedirect("list")}>
+            <div>
                   <img src={list} alt="List Icon" />
-                </a>
+                </div>
                 <div>List</div>
               </div>
             </div>
             <div className="Menu3">
-              <div onClick={this.loginOrRedirect}>
-                <a href="/add">
+              <div onClick={()=>this.loginOrRedirect("add")}>
+                <div>
                   <img src={plus} alt="Add Icon" />
-                </a>
+                </div>
                 <div>Add</div>
               </div>
             </div>
             <div className="Menu4">
-              <div onClick={this.loginOrRedirect}>
-                <a href="/">
+            <div onClick={()=>this.loginOrRedirect("recommended")}>
+            <div>
                   <img src={star} alt="Recommended Icon" />
-                </a>
+                </div>
                 <div>Recommended</div>
               </div>
             </div>
             <div className="Menu5">
-              <div onClick={this.loginOrRedirect}>
-                <a href="/">
+            <div onClick={()=>this.loginOrRedirect("search")}>
+            <div>
                   <img src={search} alt="Search Icon" />
-                </a>
+                </div>
                 <div>Search</div>
               </div>
             </div>
