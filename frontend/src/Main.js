@@ -2,6 +2,8 @@ import React from "react";
 import './Main.css';
 import InfoPage from './components/InfoPage.js'
 import Registration from './components/Registration.js'
+import MapPage from './components/MapPage.js'
+import FormPage from './components/FormPage.js'
 
 import Login from "./components/Login.js";
 import user from './icons/user.svg';
@@ -12,12 +14,16 @@ import list from './icons/list.svg';
 import plus from './icons/plus.svg';
 import coworking from './icons/coworking.png';
 
+let DEBUG = true;
+
 class Main extends React.Component {
     constructor(props) {
       super(props)
       this.default_page = ""//SET THIS PAGE
       this.state = { page: this.default_page, loginOpen: false, loggedIn: false }
       this.loginOrRedirect = this.loginOrRedirect.bind(this);
+
+      if(DEBUG)this.setLoggedIn(true);
     }
   
     componentDidMount() {
@@ -99,6 +105,10 @@ class Main extends React.Component {
             <div className="Content">
               {this.state.page === "" ? <InfoPage /> : <div/>}
               {this.state.page === "registration" ? <Registration /> : <div/>}
+              {this.state.page === "map" ? <MapPage /> : <div/>}
+              {this.state.page === "form" ? <FormPage /> : <div/>}
+
+
             </div>
             <div className="UserIcon">
               <Login
@@ -134,7 +144,7 @@ class Main extends React.Component {
             </div>
             <div className="Menu3">
               <div onClick={this.loginOrRedirect}>
-                <a href="/add">
+                <a href="/form">
                   <img src={plus} alt="Add Icon" />
                 </a>
                 <div>Add</div>
@@ -161,12 +171,21 @@ class Main extends React.Component {
       }
       
       desktop_version(){
+        document.clientWidth = document.documentElement.clientWidth * 0.3;
+
         return <div className="centered-div">{this.mobile_version()}</div>
         }
     
       render() {
-        if(window.mobile)return <div className="mobile-div">{this.mobile_version()}</div>;
-        else return this.desktop_version();
+        if(window.mobile){
+          document.clientWidth = document.documentElement.clientWidth;
+          document.clientHeight = document.documentElement.clientHeight;
+          return <div className="mobile-div">{this.mobile_version()}</div>}
+        else{
+          document.clientWidth = document.documentElement.clientWidth * .3;
+          document.clientHeight = document.documentElement.clientHeight;
+          return this.desktop_version();
+        }
       }
 }
 

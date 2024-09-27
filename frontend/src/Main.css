@@ -134,7 +134,6 @@ body,
   height: 100dvh;
   width: 100dvw; /* This must be explicit for mobile browser android chrome */
   color: pink;
-  border: 5px dotted yellow; /* Removed quotes for valid CSS */
   overflow: hidden;
   position: absolute;
 }

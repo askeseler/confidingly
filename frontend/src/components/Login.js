@@ -131,7 +131,7 @@ const LoginImage = ({ userIcon, loginOpen, setLoginOpen, setLoggedIn}) => {
           />:<div/>
           }
 
-        {!DEBUG && loginOrSignup=="signUp" ? <ReCAPTCHA ref={recaptcha} sitekey={REACT_APP_SITE_KEY} />:<div/>}
+        {!DEBUG ? <ReCAPTCHA ref={recaptcha} sitekey={REACT_APP_SITE_KEY} />:<div/>}
 
         <button className="login-button">{loginOrSignup==="login"?"Login":"Sign Up"}</button>
         <div className='response-text'>{sucessMsgSignUp}</div>

@@ -1,17 +1,16 @@
 import React from "react";
 import './InfoPage.css'; // Importing the CSS file for styles
 
-
 class InfoPage extends React.Component {
     constructor(props) {
       super(props)
     }
   
     render() {
+      const { count, increment, decrement } = this.props;
         return <>
         <div className="scroll-container">
         <div className="scroll-content">
-          <h1>Lorem Ipsum</h1>
           <p>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus
             imperdiet velit nec magna viverra, at accumsan arcu luctus. Integer
