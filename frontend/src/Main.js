@@ -107,8 +107,6 @@ class Main extends React.Component {
               {this.state.page === "registration" ? <Registration /> : <div/>}
               {this.state.page === "map" ? <MapPage /> : <div/>}
               {this.state.page === "form" ? <FormPage /> : <div/>}
-
-
             </div>
             <div className="UserIcon">
               <Login

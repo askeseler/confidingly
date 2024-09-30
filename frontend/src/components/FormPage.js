@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 // src/App.js
 import {updateLatitude,incrementLongitude,decrementLongitude,toggleCheckbox,updateInputField,
-} from '../redux/formSlice';
+} from '../redux/FormSlice';
 
 
 const FormPage = ({latitude, longitude, checkbox, inputField, updateLatitude, incrementLongitude,decrementLongitude,toggleCheckbox, updateInputField,}) => {

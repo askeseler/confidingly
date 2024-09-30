@@ -11,8 +11,8 @@ class TileMap extends Component {
     const n_tiles_pad = 2;
     let tile_cluster_width = 256 * (2 * n_tiles_pad + 1);
     let tile_cluster_height = 256 * (2 * n_tiles_pad + 1);
-    let canvas_width = document.clientWidth;
-    let canvas_height = document.clientHeight * .5;
+    let canvas_width = 600;//document.clientWidth;
+    let canvas_height = 500;//document.clientHeight * .5;
 
     const shiftX = -(tile_cluster_width - canvas_width) / 2;
     const shiftY = -(tile_cluster_height - canvas_height) / 2;
@@ -46,6 +46,7 @@ class TileMap extends Component {
   this.handleChange = this.handleChange.bind(this);
   this.handleSearchClick = this.handleSearchClick.bind(this);
   this.toggleMapStyle = this.toggleMapStyle.bind(this);
+  this.address = "";
    }
 
   toggleMapStyle = () => {
@@ -373,6 +374,11 @@ handleChange(event) {
     canvas.addEventListener("mousemove", this.handleMouseMove);
     canvas.addEventListener("mouseup", this.handleMouseUp);
     this.fillCanvasWithGray(); // Call the fill method when the component mounts
+    //window.addEventListener('locationchange', function () {alert('location changed!')});
+
+    if(this.props.onMount){
+      this.props.onMount((longitude, latitude, zoom) => this.setState({longitude:longitude, latitude:latitude, zoom:zoom}, this.fetchTilesLonLat));
+      }
   }
 
   componentWillUnmount() {
@@ -380,6 +386,11 @@ handleChange(event) {
     canvas.removeEventListener("mousedown", this.handleMouseDown);
     canvas.removeEventListener("mousemove", this.handleMouseMove);
     canvas.removeEventListener("mouseup", this.handleMouseUp);
+
+    if(this.props.onUnmount){
+    const { longitude, latitude, zoom } = this.state;
+    this.props.onUnmount({ longitude, latitude, zoom });
+    }
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -416,7 +427,8 @@ handleChange(event) {
   }
 
   handleSearchClick(address) {
-    this.fetchCoordinates(address);
+    if(address)this.address = address;
+    if(this.address !== "")this.fetchCoordinates(address);
   }
 
   fillCanvasWithGray() {
@@ -431,13 +443,14 @@ handleChange(event) {
   render() {
     return (
       <>
-              <div className="canvas-container">
+      <div className="canvas-container">
         <canvas
           ref="tileCanvas"
           width={this.state.canvas_width}
           height={this.state.canvas_height}
-        ></canvas>
-            <div className="map-zoom-controls">
+          style={{width: "100%", height:"100%"}}
+          />
+        <div className="map-zoom-controls">
                 <button className="map-plus-button" onClick={this.handleZoomIn}>+</button>
                 <button className="map-minus-button" onClick={this.handleZoomOut}>−</button>
             </div>
@@ -445,7 +458,6 @@ handleChange(event) {
             <button className="toggle-map-satellite" onClick={this.toggleMapStyle}>
             <img src={this.state.mapStyle === 'map' ? satelliteIcon : mapIcon} alt={`${this.state.mapStyle} view`} />
             </button>
-            
             </div>
         </div>
       </>

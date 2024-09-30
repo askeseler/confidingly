@@ -3,7 +3,9 @@ const initialState = {
   latitude: 0,
   longitude: 0,
   checkbox: false,
-  inputField: '',};
+  inputField: '',
+  name: '',
+  address: '',};
 const formSlice = createSlice({
   name: 'form',
   initialState,
@@ -13,7 +15,9 @@ const formSlice = createSlice({
     decrementLongitude: (state) => {state.longitude -= 1;},
     toggleCheckbox: (state) => {state.checkbox = !state.checkbox;},
     updateInputField: (state, action) => {state.inputField = action.payload;},
+    updateName: (state, action) => {state.name = action.payload;},
+    updateAddress: (state, action) => {state.address = action.payload;},
   },});
 export const {updateLatitude,incrementLongitude,decrementLongitude,
-	toggleCheckbox,updateInputField,} = formSlice.actions;
+	toggleCheckbox,updateInputField,updateName, updateAddress, updateSearchAddress} = formSlice.actions;
   export default formSlice.reducer;
