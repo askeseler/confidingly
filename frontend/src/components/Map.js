@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import './Map.css'; // Importing the CSS file for styles
 import mapIcon from '../icons/map.svg'; // Adjust the path to your map icon
-import satelliteIcon from '../icons/satellite.svg'; // Adjust the path to your satellite icon
+import satelliteIcon from '../icons/satellite.svg'; 
 
 
 class TileMap extends Component {
@@ -40,13 +40,23 @@ class TileMap extends Component {
         centerTileX: 10000, //132742,
         centerTileY: 89700, //90183,
         mapStyle: "map",
+        markers : [],
+        markerActive: false
     };
-  
 
-  this.handleChange = this.handleChange.bind(this);
-  this.handleSearchClick = this.handleSearchClick.bind(this);
-  this.toggleMapStyle = this.toggleMapStyle.bind(this);
-  this.address = "";
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSearchClick = this.handleSearchClick.bind(this);
+    this.toggleMapStyle = this.toggleMapStyle.bind(this);
+    this.handleClick = this.handleClick.bind(this);
+    this.mouseX = 0;
+    this.mouseY = 0;
+    this.address = "";
+    this.longitude;
+    this.latitude;
+   }
+
+   toggleMarkerActive(){
+    this.setState({markerActive: !this.state.markerActive})
    }
 
   toggleMapStyle = () => {
@@ -62,7 +72,7 @@ class TileMap extends Component {
       this.setState(prevState => ({
         zoom: prevState.zoom + 1
       }), () => {
-        this.fetchTilesLonLat(this.state.longitude, this.state.latitude);
+        this.fetchTilesLonLat();
       });
     };
     
@@ -70,7 +80,7 @@ class TileMap extends Component {
       this.setState(prevState => ({
         zoom: prevState.zoom - 1
       }), () => {
-        this.fetchTilesLonLat(this.state.longitude, this.state.latitude);
+        this.fetchTilesLonLat();
       });
     };
     
@@ -94,17 +104,6 @@ handleChange(event) {
     );
   };
 
-  tileDifference(tileX = 1, tileY = 1, zoom = 16) {
-    const tile1 = this.tileXYToLonLat(tileX, tileY, zoom);
-    const tile2 = this.tileXYToLonLat(tileX + 1, tileY, zoom);
-
-    // Calculate the differences
-    const dist_lon = tile2.lon - tile1.lon;
-    const dist_lat = tile2.lat - tile1.lat;
-
-    return { dist_lon: dist_lon, dist_lat: dist_lat };
-}
-
 
   tileXYToLonLat(tileX, tileY, zoom) {
     const lon = (tileX / Math.pow(2, zoom)) * 360 - 180;
@@ -112,7 +111,7 @@ handleChange(event) {
     const n = Math.PI - 2 * Math.PI * tileY / Math.pow(2, zoom);
     const lat = (180 / Math.PI) * Math.atan(Math.sinh(n));
 
-    return { lon: lon, lat: lat };
+    return { longitude: lon, latitude: lat };
 }
 
   fetchTilesXY = async () => {
@@ -204,94 +203,132 @@ handleChange(event) {
     this.setState({ [e.target.name]: e.target.value });
   };
 
-  renderCanvas = () => {
-    const canvas = this.refs.tileCanvas;
-    const ctx = canvas.getContext("2d");
-    ctx.imageSmoothingEnabled = false;
-    const tileSize = 255;
-
-    this.state.tiles.forEach((tile) => {
-      const img = new Image();
-      img.src = tile.imgURL;
-      img.onload = () => {
-        const xPos =
-          (tile.x - Math.floor(this.state.centerTileX)) * tileSize +
-          this.state.offsetX +
-          this.state.shiftX;
-        const yPos =
-          (tile.y - Math.floor(this.state.centerTileY)) * tileSize +
-          this.state.offsetY +
-          this.state.shiftY;
-        ctx.drawImage(img, xPos, yPos, tileSize, tileSize);
-
-        if (false) {
-          // Set the line color to red
-          ctx.strokeStyle = "red";
-          ctx.lineWidth = 1;
-
-          // Draw vertical lines at intervals of 256 pixels
-          if(false){
-          for (let x = 0; x < canvas.width; x += 256) {
-            ctx.beginPath();
-            ctx.moveTo(x, 0);
-            ctx.lineTo(x, canvas.height);
-            ctx.stroke();
-          }
-
-          // Draw horizontal lines at intervals of 256 pixels
-          for (let y = 0; y < canvas.height; y += 256) {
-            ctx.beginPath();
-            ctx.moveTo(0, y);
-            ctx.lineTo(canvas.width, y);
-            ctx.stroke();
-          }}
-
-          // Calculate the point position
-          const pointX =
-            this.state.shiftX +
-            this.state.offsetX +
-            this.state.tile_cluster_width / 2 -
-            128;
-          const pointY =
-            this.state.shiftY +
-            this.state.offsetY +
-            this.state.tile_cluster_height / 2 -
-            128;
-
-          // Set the point color to red
-          ctx.fillStyle = "red";
-
-          // Draw the point
-          ctx.beginPath();
-          ctx.arc(pointX + 128, pointY + 128, 2, 0, 50 * Math.PI); // 2 is the radius of the point
-          ctx.fill();
-          ctx.stroke();
-
-          ctx.beginPath();
-          ctx.moveTo(pointX, pointY);
-          ctx.lineTo(pointX + 256, pointY);
-          ctx.stroke();
-          ctx.lineTo(pointX + 256, pointY + 256);
-          ctx.stroke();
-          ctx.lineTo(pointX, pointY + 256);
-          ctx.stroke();
-          ctx.lineTo(pointX, pointY);
-          ctx.stroke();
-
-
-          ctx.beginPath();
-          ctx.moveTo(0, 255);
-          ctx.lineTo(512, 255);
-          ctx.stroke();
-
-          ctx.beginPath();
-          ctx.moveTo(255, 0);
-          ctx.lineTo(255, 512);
-          ctx.stroke();
-        }
-      };
+  drawSvg = (icon_src, x, y) => {
+    return new Promise((resolve, reject) => {
+        const canvas = this.refs.tileCanvas1;
+        const ctx = canvas.getContext('2d');
+        const img = new Image();
+        img.src = icon_src; // Set the src to the imported SVG URL
+        img.onload = () => {
+            ctx.drawImage(img, x, y, 100, 100);
+            resolve(); // Resolve the promise after drawing
+        };
+        img.onerror = (error) => {
+            reject(new Error("Image failed to load: " + error));
+        };
     });
   };
+
+  async drawMarkers(){
+    if(this.state.markerActive) await this.drawSvg(satelliteIcon, this.mouseX, this.mouseY);
+    for(let marker of this.state.markers){
+      //Identify relative position of marker to center of screen
+      let x = this.lon2tile(this.state.longitude, this.state.zoom);
+      let y = this.lat2tile(this.state.latitude, this.state.zoom);
+      let x_dash = this.lon2tile(marker["longitude"], this.state.zoom);
+      let y_dash = this.lat2tile(marker["latitude"], this.state.zoom);
+      let x_px_pos = (this.state.canvas_width/2) +(255*(x_dash - x));
+      let y_px_pos = (this.state.canvas_height/2) +(255*(y_dash - y));
+
+      await this.drawSvg(satelliteIcon, x_px_pos, y_px_pos)
+    }
+  }
+
+  renderCanvas = async () => {
+    const canvas = this.refs.tileCanvas;      // Main canvas for display
+    const canvas1 = this.refs.tileCanvas1;    // Off-screen (buffer) canvas
+    const ctx = canvas1.getContext("2d");     // Get context of the buffer canvas
+    ctx.imageSmoothingEnabled = false;         // Disable smoothing for pixel art, if applicable
+    const tileSize = 255;                       // Size of each tile
+
+    // Clear the buffer canvas before rendering
+    ctx.clearRect(0, 0, canvas1.width, canvas1.height);
+
+    // Track how many images have loaded
+    let imagesLoaded = 0;
+
+    this.state.tiles.forEach((tile) => {
+        const img = new Image();
+        img.src = tile.imgURL;
+        img.onload = async () => {
+            const xPos =
+                (tile.x - Math.floor(this.state.centerTileX)) * tileSize +
+                this.state.offsetX +
+                this.state.shiftX;
+            const yPos =
+                (tile.y - Math.floor(this.state.centerTileY)) * tileSize +
+                this.state.offsetY +
+                this.state.shiftY;
+            
+            // Draw the image on the buffer canvas
+            ctx.drawImage(img, xPos, yPos, tileSize, tileSize);
+            imagesLoaded++;
+
+            // Check if all images have been loaded
+            if (imagesLoaded === this.state.tiles.length) {
+                await this.drawMarkers();
+                const displayCtx = canvas.getContext("2d");
+                //displayCtx.clearRect(0, 0, canvas.width, canvas.height); // Clear the main canvas
+                displayCtx.drawImage(canvas1, 0, 0); // Draw the buffer canvas onto the main canvas
+            }
+            
+            if (true) {
+              // Set the line color to red
+              ctx.strokeStyle = "red";
+              ctx.lineWidth = 1;
+    
+              // Draw vertical lines at intervals of 256 pixels
+              if(false){
+              for (let x = 0; x < canvas.width; x += 256) {
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, canvas.height);
+                ctx.stroke();
+              }
+    
+              // Draw horizontal lines at intervals of 256 pixels
+              for (let y = 0; y < canvas.height; y += 256) {
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(canvas.width, y);
+                ctx.stroke();
+              }}
+    
+              // Calculate the point position
+              const pointX =
+                this.state.shiftX +
+                this.state.offsetX +
+                this.state.tile_cluster_width / 2 -
+                128;
+              const pointY =
+                this.state.shiftY +
+                this.state.offsetY +
+                this.state.tile_cluster_height / 2 -
+                128;
+    
+              // Set the point color to red
+              ctx.fillStyle = "red";
+    
+              // Draw the point
+              ctx.beginPath();
+              ctx.arc(pointX + 128, pointY + 128, 2, 0, 50 * Math.PI); // 2 is the radius of the point
+              ctx.fill();
+              ctx.stroke();
+    
+              ctx.beginPath();
+              ctx.moveTo(pointX, pointY);
+              ctx.lineTo(pointX + 256, pointY);
+              ctx.stroke();
+              ctx.lineTo(pointX + 256, pointY + 256);
+              ctx.stroke();
+              ctx.lineTo(pointX, pointY + 256);
+              ctx.stroke();
+              ctx.lineTo(pointX, pointY);
+              ctx.stroke();
+            }
+          };
+        });
+};
 
   handleMouseDown = (e) => {
     this.setState({
@@ -314,7 +351,7 @@ handleChange(event) {
 
       let {centerTileX, centerTileY, shiftX, shiftY, zoom } = this.state;
 
-      let {lon, lat} = this.tileXYToLonLat(centerTileX + 0.5 + displacementX/255 ,
+      let {longitude, latitude} = this.tileXYToLonLat(centerTileX + 0.5 + displacementX/255 ,
                                            centerTileY + 0.5 + displacementY/255 , zoom);
       if (this.lock_fetch) {
         //console.log("locked");
@@ -350,13 +387,19 @@ handleChange(event) {
         {
           offsetX: offsetX,
           offsetY: offsetY,
-          longitude: lon,
-          latitude: lat,
+          longitude: longitude,
+          latitude: latitude,
         },
         this.renderCanvas
       );
     }
+    const rect = this.refs.tileCanvas.getBoundingClientRect();
+    this.mouseX = (e.clientX - rect.left) * (this.refs.tileCanvas.width / rect.width);
+    this.mouseY = (e.clientY - rect.top) * (this.refs.tileCanvas.height / rect.height);
+    
+    this.renderCanvas();
   };
+
 
   handleMouseUp = () => {
     this.setState({
@@ -394,15 +437,7 @@ handleChange(event) {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (
-      prevState.tiles !== this.state.tiles ||
-      prevState.offsetX !== this.state.offsetX ||
-      prevState.offsetY !== this.state.offsetY ||
-      prevState.latitude !== this.state.latitude ||
-      prevState.longitude !== this.state.longitude
-    ) {
       this.renderCanvas();
-    }
   }
 
   fetchCoordinates(address) {
@@ -440,6 +475,31 @@ handleChange(event) {
     ctx.fillRect(0, 0, canvas.width, canvas.height); // Fill the rectangle
 }
 
+  add_marker(){
+      // Calculate the center position of the central tile
+      const pointX =
+      this.state.shiftX +
+      this.state.offsetX +
+      this.state.tile_cluster_width / 2 -
+      128;
+    const pointY =
+      this.state.shiftY +
+      this.state.offsetY +
+      this.state.tile_cluster_height / 2 -
+      128;
+
+      let displacementX =  - (pointX - this.mouseX) - 128;
+      let displacementY = - (pointY - this.mouseY) - 128;
+      let {centerTileX, centerTileY, zoom} = this.state;
+      const {longitude, latitude} = this.tileXYToLonLat(centerTileX + 0.5 + displacementX/255 ,centerTileY + 0.5 + displacementY/255 , zoom);
+      this.setState(prevState => ({markers: [{ "longitude": longitude, "latitude": latitude, type: "default" }, ...prevState.markers]}), this.toggleMarkerActive);
+      //this.setState({longitude:lon, latitude:lat}, this.fetchTilesLonLat);
+  }
+
+  handleClick(){
+    if(this.state.markerActive)this.add_marker();
+  }
+
   render() {
     return (
       <>
@@ -449,7 +509,15 @@ handleChange(event) {
           width={this.state.canvas_width}
           height={this.state.canvas_height}
           style={{width: "100%", height:"100%"}}
+          onClick={this.handleClick}
           />
+        <canvas
+          ref="tileCanvas1"
+          width={this.state.canvas_width}
+          height={this.state.canvas_height}
+          style={{width: "100%", height:"100%", 'display': 'none' }}
+          />
+          
         <div className="map-zoom-controls">
                 <button className="map-plus-button" onClick={this.handleZoomIn}>+</button>
                 <button className="map-minus-button" onClick={this.handleZoomOut}>−</button>
@@ -463,8 +531,6 @@ handleChange(event) {
       </>
     );
   }
-  
-   
 }
 
 export default TileMap;

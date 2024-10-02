@@ -3,6 +3,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux'; // Import hooks
 import { updateAddress, updateName } from '../redux/FormSlice'; // Import Redux actions
 import { updateLongitude, updateLatitude, updateZoom} from '../redux/MapSlice'; // Import Redux actions
+import crosshairIcon from '../icons/crosshair.svg'; // Adjust the path to your map icon
 import { connect } from 'react-redux';
 import Map from './Map';
 
@@ -11,7 +12,7 @@ const MapPage = () => {
   const dispatch = useDispatch(); // Redux dispatch function
 
   // Define state for address and name
-  //const [address, setAddress] = useState('');
+  const [selectMarker, setSelectMarker] = useState(false);
   //const [name, setName] = useState('');
   const name = useSelector((state) => state.form.name);
   const address = useSelector((state) => state.form.address);
@@ -21,10 +22,10 @@ const MapPage = () => {
     dispatch(updateAddress(event.target.value)); // Dispatch action to update name
   };
 
-    // Handle name input change
-    const handleNameChange = (event) => {
+  // Handle name input change
+  const handleNameChange = (event) => {
       dispatch(updateName(event.target.value)); // Dispatch action to update name
-    };
+  };
 
   // Handle search button click
   const handleSearchClick = () => {
@@ -51,7 +52,7 @@ const MapPage = () => {
   return (
     <>
       <div className="map-container">
-        <Map width="100%" height="100%" ref={mapRef} onUnmount={saveToRedux} onMount={loadFromRedux} /> {/* Pass address to Map component */}
+        <Map width="100%" height="100%" select_marker_pos ref={mapRef} onUnmount={saveToRedux} onMount={loadFromRedux} /> {/* Pass address to Map component */}
         <div className="map-menu">
           <div className="map-input-group">
             <label className="map-input-label">Address</label>
@@ -66,6 +67,7 @@ const MapPage = () => {
               <button
                 className="map-green-button"
                 onClick={handleSearchClick} // Call local handler
+                style={{width:"80px", height:"35px"}}
               >
                 Search
               </button>
@@ -82,7 +84,10 @@ const MapPage = () => {
                 onChange={handleNameChange} // Call local handler
                 className="map-input-field"
               />
-              <button className="map-blue-button">⌖</button>
+
+              <button className="map-blue-button" style={{width:"80px", height:"35px"}} onClick={()=>{if(mapRef.current)mapRef.current.toggleMarkerActive()}}>
+                <img src={crosshairIcon} style={{width:"20px", height:"20px"}}>
+              </img></button>
             </div>
           </div>
         </div>
