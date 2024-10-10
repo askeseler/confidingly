@@ -3,7 +3,7 @@ import './Main.css';
 import InfoPage from './components/InfoPage.js'
 import Registration from './components/Registration.js'
 import MapPage from './components/MapPage.js'
-import FormPage from './components/FormPage.js'
+import AddPage from './components/AddPage.js'
 
 import Login from "./components/Login.js";
 import user from './icons/user.svg';
@@ -106,7 +106,7 @@ class Main extends React.Component {
               {this.state.page === "" ? <InfoPage /> : <div/>}
               {this.state.page === "registration" ? <Registration /> : <div/>}
               {this.state.page === "map" ? <MapPage /> : <div/>}
-              {this.state.page === "form" ? <FormPage /> : <div/>}
+              {this.state.page === "add" ? <AddPage /> : <div/>}
             </div>
             <div className="UserIcon">
               <Login
@@ -142,7 +142,7 @@ class Main extends React.Component {
             </div>
             <div className="Menu3">
               <div onClick={this.loginOrRedirect}>
-                <a href="/form">
+                <a href="/add">
                   <img src={plus} alt="Add Icon" />
                 </a>
                 <div>Add</div>
